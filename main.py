@@ -25,7 +25,6 @@ def main():
     if file is not None:
         file_path = save_uploaded_file(file)
         file_contents = open(file_path, "r").read()
-        st.write(file_path)
         
         # Convert text to PDF
         pdf = convert_to_pdf(file_contents)
@@ -37,6 +36,9 @@ def main():
             file_name="converted.pdf",
             mime="application/pdf"
         )
+        
+        # Display default file path
+        st.write("Default File Path:", file_path)
 
 if __name__ == "__main__":
     main()
