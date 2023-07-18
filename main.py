@@ -1,15 +1,12 @@
 import streamlit as st
-from reportlab.pdfgen import canvas
+from pdfdocument import PDFDocument
 
 def convert_to_pdf(text):
-    pdf = canvas.Canvas("converted.pdf")
-    pdf.setFont("Helvetica", 12)
-    lines = text.split("\n")
-    y = 720
-    for line in lines:
-        pdf.drawString(50, y, line)
-        y -= 15
-    pdf.save()
+    pdf = PDFDocument("converted.pdf")
+    pdf.init_report()
+    pdf.h1("Converted PDF")
+    pdf.text(text)
+    pdf.generate()
 
 def main():
     st.title("Text to PDF Converter")
