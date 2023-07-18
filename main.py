@@ -1,24 +1,15 @@
 import streamlit as st
-from fpdf import FPDF
-import os
-
+from reportlab.pdfgen import canvas
 
 def convert_to_pdf(text):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(0, 10, txt=text)
-    return pdf
-
-
-def save_uploaded_file(file):
-    folder_path = "uploads"
-    os.makedirs(folder_path, exist_ok=True)  # Create the folder if it doesn't exist
-    file_path = os.path.join(folder_path, file.name)
-    with open(file_path, "wb") as f:
-        f.write(file.getbuffer())
-    return file_path
-
+    pdf = canvas.Canvas("converted.pdf")
+    pdf.setFont("Helvetica", 12)
+    lines = text.split("\n")
+    y = 720
+    for line in lines:
+        pdf.drawString(50, y, line)
+        y -= 15
+    pdf.save()
 
 def main():
     st.title("Text to PDF Converter")
@@ -26,25 +17,20 @@ def main():
     # File upload section
     st.header("Upload Text File")
     file = st.file_uploader("Choose a text file", type=["txt"])
-
+    
     if file is not None:
-        file_path = save_uploaded_file(file)
-        file_contents = open(file_path, "r").read()
-
+        file_contents = file.read().decode("utf-8")
+        
         # Convert text to PDF
-        pdf = convert_to_pdf(file_contents)
+        convert_to_pdf(file_contents)
 
         # Download link
         st.download_button(
             label="Download PDF",
-            data=pdf.output(dest="S").encode("latin-1"),
+            data=open("converted.pdf", "rb").read(),
             file_name="converted.pdf",
             mime="application/pdf"
         )
-
-        # Display default file path
-        st.write("Default File Path:", file_path)
-
 
 if __name__ == "__main__":
     main()
