@@ -1,1 +1,1 @@
-pdfdocument==0.2.0
+pdfdocument==4.0.0
